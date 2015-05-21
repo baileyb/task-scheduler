@@ -1,7 +1,7 @@
 {
-  "name": "uber-atc-scheduler",
+  "name": "atc-scheduler",
   "version": "1.0.0",
-  "description": "",
+  "description": "Brian Bailey Homework Exercise",
   "main": "index.js",
   "scripts": {
     "test": "node test.js"
