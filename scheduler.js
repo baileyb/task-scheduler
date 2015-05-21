@@ -13,7 +13,7 @@ function Scheduler() {
   this.total_tasks = 0;
   this.tasks_completed = 0;
   this.total_ticks = 0;
-  this.complete_msg = '';
+  this.scheduling_plan = '';
 }
 
 Scheduler.prototype.add_resources = function(config) {
@@ -99,7 +99,7 @@ Scheduler.prototype.dispatch = function(task) {
     if (available_cores >= task.cores_required) {
       console.log('[scheduler] Starting task [' + task.name + ']');
       this.resources[r].add_task(task);
-      this.complete_msg += this.resources[r].name + ": " + task.name + "\n";
+      this.scheduling_plan += this.resources[r].name + ": " + task.name + "\n";
       return true;
     }
   }
@@ -111,9 +111,6 @@ Scheduler.prototype.start = function() {
   while (this.total_tasks > this.tasks_completed) {
     this.next_tick();
   }
-
-  console.log("\n\n--- All tasks have been completed ---");
-  console.log(this.complete_msg);
 };
 
 Scheduler.prototype.display_usage = function() {
