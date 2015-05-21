@@ -13,6 +13,7 @@ function Scheduler() {
   this.total_tasks = 0;
   this.tasks_completed = 0;
   this.total_ticks = 0;
+  this.complete_msg = '';
 }
 
 Scheduler.prototype.add_resources = function(config) {
@@ -34,27 +35,34 @@ Scheduler.prototype.add_tasks = function(config) {
     var execution_time = config[t]["execution_time"];
     this.tasks[t] = new Task(t, cores_required, execution_time, this);
 
-    // Add any dependencies for the current task
+    // Add dependencies for the current task
     if (config[t].hasOwnProperty("parent_tasks")) {
       var parent_tasks = config[t]["parent_tasks"].split(",");
       for (var p in parent_tasks) {
         var name = S(parent_tasks[p]).trim().s;
         this.tasks[t].add_dependency(name);
-        this.tasks[name].add_watcher(this.tasks[t]);
       }
     }
+  }
 
-    // Some basic checks and warnings
+  // Go through the task list, process dependencies, and look for gotchas
+  for (var t in this.tasks) {
+
+    // Process the dependencies for each task and add the watchers
+    for (var d in this.tasks[t].dependencies) {
+      var dependency_name = this.tasks[t].dependencies[d];
+      this.tasks[dependency_name].add_watcher(this.tasks[t]);
+    }
+
     if (this.tasks[t].cores_required > this.max_cores) {
       this.cannot_execute.push(this.tasks[t]);
+      delete this.tasks[t];
     } else if (this.tasks[t].dependencies_met) {
       this.ready.push(this.tasks[t]);
     }
 
     this.total_tasks++;
   }
-
-  // Check for circular dependency hell
 };
 
 Scheduler.prototype.notify_ready = function(task_name) {
@@ -74,29 +82,38 @@ Scheduler.prototype.next_tick = function() {
     this.resources[r].tick();
   }
 
+  var retry = [];
   while (this.ready.length > 0) {
     var task = this.ready.pop();
-    this.dispatch(task);
-    this.display_usage();
+    if (!this.dispatch(task)) {
+      retry.push(task);
+    }
   }
+
+  this.ready = retry;
 };
 
 Scheduler.prototype.dispatch = function(task) {
-  console.log('[scheduler] Dispatching [' + task.name + ']');
-
   for (var r in this.resources) {
     var available_cores = this.resources[r].available_cores;
     if (available_cores >= task.cores_required) {
+      console.log('[scheduler] Starting task [' + task.name + ']');
       this.resources[r].add_task(task);
-      break;
+      this.complete_msg += this.resources[r].name + ": " + task.name + "\n";
+      return true;
     }
   }
+
+  return false;
 };
 
 Scheduler.prototype.start = function() {
   while (this.total_tasks > this.tasks_completed) {
     this.next_tick();
   }
+
+  console.log("\n\n--- All tasks have been completed ---");
+  console.log(this.complete_msg);
 };
 
 Scheduler.prototype.display_usage = function() {
