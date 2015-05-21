@@ -1,4 +1,32 @@
-Running the API
+Application Overview
+===
+
+The application consists of 3 main components: tasks, resources, and a scheduler.
+
+Lifecycle of a Task:
+
+1. The scheduler categorizes all tasks into one of three groupings: ready to run, waiting on dependencies, or unable to run
+2. The scheduler maintains the global "clock". On each tick, it looks at the ready queue and dispatches all tasks with are ready to be run. It also "ticks" the execution counter of each resource under its control.
+3. The scheduler matches each task with a resource that has enough available cores to process the task.
+4. Once the task is complete, the task notifies both the scheduler and any watchers. Watchers are other tasks which are waiting for the current task to be completed.
+5. As new tasks become "ready" (meaining all dependencies are met), they are moved into the schedulers' ready queue and processed on the next tick.
+6. Once all tasks have been processed, the scheduler shuts down.
+
+Enhancements & Potential Issues
+===
+
+There are still a lot of things this scheduler could do better, including:
+
+- Better validation of the files (i.e., checking for duplicate task names, circular references)
+- Prioritization of resources - for example, fill up compute1 before looking at compute2. Right now the algorithm is "first-available"
+- Task prioritization - given a bunch of tasks that are ready to be run, the order in which they are completed is not based on any priority.
+- Resources are "pushed" tasks - optimizations could be made to have resources "request" tasks of a certain size, leading to less idle compute cycles
+- In a real world scenario, the scheduler would remain running and tasks could be added on the fly.
+- When dispatching, every resource is queried in a sequential manner. This is fine for a few resources. For a large enough compute cluster, it would become inefficient very quickly.
+- Everything is "tick" based. As we add more to the dispatch algorithm, the ticks become slower. Thought should be given to allowing each resource to operate independently and as fast as possible. Communication between resources and the scheduler should be more event based.
+
+
+Running the application
 ===
 
 The sample scheduling application is written in node.js. To install and run the application, clone the repo and run the following:
@@ -9,7 +37,7 @@ npm test          <-- run the scheduling app and test the included scenarios
 ```
 
 Include Scenarios / Test Cases
-====
+===
 
 Included with the application are a number of scenarios, representing different versions of the task and resource YAML files
 
@@ -18,17 +46,6 @@ basic             <-- the scenario included with the original homework assignmen
 cant_start        <-- many, tasks, but all have dependencies, meaning we can start
 equal             <-- scenario where all resources and all tasks are the same
 ```
-
-Enhancements & Potential Issues
-====
-
-There are still a lot of things this scheduler could do better, including:
-
-- Better validation of the files (i.e., checking for duplicate task names, circular references)
-- Prioritization of resources, right now its very ad-hoc and not based on any kind of ordering
-- Task prioritization - given a bunch of tasks that are ready to be run, the order in which they are completed is not based on any priority.
-- Resources are "pushed" work - optimizations could be made to have resources "request" work, leading to less ideal compute cycles
-
 
 Original Exercise
 ===
