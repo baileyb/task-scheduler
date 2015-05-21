@@ -108,9 +108,15 @@ Scheduler.prototype.dispatch = function(task) {
 };
 
 Scheduler.prototype.start = function() {
+  if (this.ready.length == 0) {
+    return false;
+  }
+
   while (this.total_tasks > this.tasks_completed) {
     this.next_tick();
   }
+
+  return true;
 };
 
 Scheduler.prototype.display_usage = function() {
