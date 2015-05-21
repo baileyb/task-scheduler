@@ -42,9 +42,10 @@ Include Scenarios / Test Cases
 Included with the application are a number of scenarios, representing different versions of the task and resource YAML files
 
 ```
-basic             <-- the scenario included with the original homework assignment
-cant_start        <-- many, tasks, but all have dependencies, meaning we can start
-equal             <-- scenario where all resources and all tasks are the same
+basic                 <-- the scenario included with the original homework assignment
+cant_start            <-- many, tasks, but all have dependencies, meaning we can start
+equal                 <-- scenario where all resources and all tasks are the same
+not_enough_resources  <-- one task requires more cores than are available on any resource
 ```
 
 Original Exercise

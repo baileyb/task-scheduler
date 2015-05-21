@@ -13,6 +13,10 @@ var scenarios = {
   equal: {
     resources: './scenarios/equal/resources.yml',
     tasks: './scenarios/equal/tasks.yml'
+  },
+  not_enough_resources: {
+    resources: './scenarios/not_enough_resources/resources.yml',
+    tasks: './scenarios/not_enough_resources/tasks.yml'
   }
 };
 
@@ -23,7 +27,7 @@ for (var s in scenarios) {
   scheduler.add_tasks(scenarios[s].tasks);
   if (scheduler.start()) {
     console.log("\n---> Scenario completed");
-    console.log(scheduler.scheduling_plan);
+    console.log(scheduler.display_scheduling_plan());
   } else {
     console.log("FAIL: unable to run this scenario - there are no tasks that can be run (check dependencies)\n");
   }

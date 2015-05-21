@@ -2,7 +2,8 @@ var yaml = require('js-yaml')
   , fs = require('fs')
   , S = require('string')
   , Resource = require('./resource')
-  , Task = require('./task');
+  , Task = require('./task')
+  , util = require('util');
 
 function Scheduler() {
   this.tasks = {};
@@ -56,7 +57,8 @@ Scheduler.prototype.add_tasks = function(config) {
 
     if (this.tasks[t].cores_required > this.max_cores) {
       this.cannot_execute.push(this.tasks[t]);
-      delete this.tasks[t];
+      this.tasks[t].unable_to_process = true;
+      this.total_tasks--;
     } else if (this.tasks[t].dependencies_met) {
       this.ready.push(this.tasks[t]);
     }
@@ -85,8 +87,10 @@ Scheduler.prototype.next_tick = function() {
   var retry = [];
   while (this.ready.length > 0) {
     var task = this.ready.pop();
-    if (!this.dispatch(task)) {
-      retry.push(task);
+    if (!task.unable_to_process) {
+      if (!this.dispatch(task)) {
+        retry.push(task);
+      }
     }
   }
 
@@ -124,6 +128,15 @@ Scheduler.prototype.display_usage = function() {
   for (var r in this.resources) {
     this.resources[r].display_usage();
   }
+};
+
+Scheduler.prototype.display_scheduling_plan = function() {
+  if (this.cannot_execute.length != 0) {
+    for (var i in this.cannot_execute) {
+      this.scheduling_plan += "Unable to process [" + this.cannot_execute[i].name + "] - no suitable resources available\n";
+    }
+  }
+  return this.scheduling_plan;
 };
 
 module.exports = Scheduler;

@@ -6,6 +6,7 @@ function Task(name, cores_required, execution_time, scheduler) {
   this.dependencies_met = true;
   this.watchers = [];
   this.scheduler = scheduler;
+  this.unable_to_process = false;
 }
 
 Task.prototype.add_watcher = function(task) {
