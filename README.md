@@ -52,7 +52,6 @@ Original Exercise
 ===
 
 Build a planner
-Offboard Infrastructure engineers at the ATC are expected to be able to reason about large systems and the complex interactions they may have. We need to be able to write software that will coordinate and manage a variety of different tasks.
 
 Please write software that will tackle the following problem. Use whatever tools you find appropriate, whether it be your programming environment, using Google, etc. Please document you work, discuss your approach, and enumerate all the assumptions and trade-offs that you made. Please do not spend more than 8-10 hours on this, and feel free to ask questions. We are most interested in seeing how you approach a problem, how you manage the deadline, how you communicate your thoughts around the problem, and what your view of “quality” is. We wish you to submit your software, instructions on how to run it, an example data set that we can run, and documentation on any design decisions or assumptions you made.
 
