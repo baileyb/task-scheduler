@@ -103,7 +103,7 @@ Scheduler.prototype.dispatch = function(task) {
     if (available_cores >= task.cores_required) {
       console.log('[scheduler] Starting task [' + task.name + ']');
       this.resources[r].add_task(task);
-      this.scheduling_plan += this.resources[r].name + ": " + task.name + "\n";
+      this.scheduling_plan += task.name + ": " + this.resources[r].name + "\n";
       return true;
     }
   }
