@@ -16,8 +16,19 @@ Included with the application are a number of scenarios, representing different 
 ```
 basic             <-- the scenario included with the original homework assignment
 cant_start        <-- many, tasks, but all have dependencies, meaning we can start
-equal_compute     <-- scenario where all resources have the same number of available_cores
+equal             <-- scenario where all resources and all tasks are the same
 ```
+
+Enhancements & Potential Issues
+====
+
+There are still a lot of things this scheduler could do better, including:
+
+- Better validation of the files (i.e., checking for duplicate task names, circular references)
+- Prioritization of resources, right now its very ad-hoc and not based on any kind of ordering
+- Task prioritization - given a bunch of tasks that are ready to be run, the order in which they are completed is not based on any priority.
+- Resources are "pushed" work - optimizations could be made to have resources "request" work, leading to less ideal compute cycles
+
 
 Original Exercise
 ===
